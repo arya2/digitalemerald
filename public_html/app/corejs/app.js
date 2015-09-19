@@ -17,11 +17,12 @@
       function($routeProvider,$locationProvider) {
         $locationProvider.html5Mode(true).hashPrefix('!');
         $routeProvider.
-          when('/', ri("lp")).
-          otherwise({
-            redirectTo: '/404'
-          });
-      }]);
+            when('/', ri("lp")).
+            when('/courses', ri("courses")).
+            otherwise({
+                redirectTo: '/404'
+            });
+        }]);
     
     de.factory("Auth", ["$firebaseAuth",
       function($firebaseAuth) {
@@ -39,11 +40,14 @@
 
         main.auth = Auth;
         main.auth.$onAuth(function(authData) {
-            clientRef = new Firebase("https://digitalemerald.firebaseio.com/" + authData.auth.uid);
+            if(authData){
+                clientRef = new Firebase("https://digitalemerald.firebaseio.com/" + authData.auth.uid);
+                main.client = $firebaseObject(clientRef);
+                main.client.name = authData.google.displayName;
+                main.client.$save();
+            }
             main.authData = authData;
-            main.client = $firebaseObject(clientRef);
-            main.client.name = authData.google.displayName;
-            main.client.$save();
+
         });
         
         main.login = function(){
@@ -54,11 +58,35 @@
             });
         }
         
+        main.logout = function(){
+            main.auth.$unauth(); 
+        }
+        
     }])
     
     
     
     de.controller('lp', ["$scope", function($scope){
         $scope.yolo = 'hollla';
+    }])    
+    
+    de.controller('courses', ["$scope", function($scope){
+
+        var courses = this;
+        
+        courses.search = function(){
+            console.log(courses.query);
+        }
+        
+        
+        courses.results = [{"name":"anthro"},{"name":"anthro"},{"name":"anthro"},{"name":"anthro"},{"name":"anthro"}]
+        
+        
+        
+        
+        
+        
+        
+    
     }])
 })()
