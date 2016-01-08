@@ -1,8 +1,8 @@
-##Rocket Roster
+#Rocket Roster
 
 An Angular app to organize course registration.
 
-#Features
+##Features
 * View course directory
 * Purchase courses
 * Add courses to schedule
