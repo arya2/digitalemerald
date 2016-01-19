@@ -1,0 +1,30 @@
+<div id="page-wrapper">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1 class="page-header">Shopping Cart</h1>
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            Shopping Cart
+                        </div>
+                        <div class="panel-body">
+                            <ul>
+                                <li ng-repeat="course in main.client.shoppingcart">
+                                    {{course.title}}
+                                </li>
+                            </ul>
+                            <a href="#" ng-click="main.checkout()">
+                                <div class="btn btn-default">
+                                    Checkout
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>

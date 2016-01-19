@@ -10,6 +10,8 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.13.3",
+    "firebase": "^2.2.9",
+    "request": "^2.62.0",
     "simple-text-parser": "^0.1.2"
   }
 }

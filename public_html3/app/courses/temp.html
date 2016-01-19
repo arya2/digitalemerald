@@ -1,0 +1,27 @@
+<div class="container courses">
+    
+    <h1>Courses</h1>
+
+    <div class="course-search">    
+        <form ng-submit="courses.search()">
+        <input class="nav-searchinput bw-input" ng-model="courses.query" placeholder="Search for courses"/>
+        <input type="submit" style="position: absolute; left: -9999px; width: 1px; height: 1px;"/>
+    </form>
+        
+    <div class="row">
+        
+        <div class="col-sm-12 col-md-6 course-search-results">
+            <ul>
+                <li ng-repeat="course in courses.results">
+                    {{course.name}}
+                </li>
+            </ul>
+        </div>        
+        
+        <div class="col-sm-12 col-md-6 course-schedule-wrapper">
+            
+        </div>
+        
+    </div>
+    
+</div>

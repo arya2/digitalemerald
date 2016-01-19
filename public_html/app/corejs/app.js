@@ -1,30 +1,32 @@
 (function(){
 'use strict';
 
-    var de = angular.module("de", [
+    var rr = angular.module("rr", [
         'firebase',
         'ngRoute'
     ]);
     
     function ri(page){
         return {
-            templateUrl: "app/"+page+"/temp.html",
-            controller: page+' as '+page
+            templateUrl: "app/"+page+"/temp.html"
         };
     }
 
-    de.config(['$routeProvider','$locationProvider',
+    rr.config(['$routeProvider','$locationProvider',
       function($routeProvider,$locationProvider) {
         $locationProvider.html5Mode(true).hashPrefix('!');
         $routeProvider.
-            when('/', ri("lp")).
+            when('/', ri("dashboard")).
             when('/courses', ri("courses")).
+            when('/grades', ri("grades")).
+            when('/shoppingcart', ri("shoppingcart")).
+            when('/404', ri("404")).
             otherwise({
                 redirectTo: '/404'
             });
         }]);
     
-    de.factory("Auth", ["$firebaseAuth",
+    rr.factory("Auth", ["$firebaseAuth",
       function($firebaseAuth) {
         var authRef = new Firebase("https://digitalemerald.firebaseio.com");
         return $firebaseAuth(authRef);
@@ -32,19 +34,29 @@
     ]);
     
     
-    de.controller('MainController', ["$scope", "$firebaseObject", "Auth", function($scope, $firebaseObject, Auth){
+    rr.controller('MainController', ["$scope", "$firebaseObject","$firebaseArray", "Auth","$filter", function($scope, $firebaseObject, $firebaseArray, Auth, $filter){
+        
+        function isinlist (arr, id){
+            var len = arr.length;
+            for (var i = 0; i<len; i++){
+                if (arr[i].$id == id) return true;
+            }
+            return false;
+        }
+        
         
         var main = this;
         main.client = {};
         var clientRef = "";
-
+        var newcourses = [];
+        
         main.auth = Auth;
         main.auth.$onAuth(function(authData) {
             if(authData){
-                clientRef = new Firebase("https://digitalemerald.firebaseio.com/" + authData.auth.uid);
+                clientRef = new Firebase("https://digitalemerald.firebaseio.com/users/" + authData.auth.uid);
                 main.client = $firebaseObject(clientRef);
                 main.client.name = authData.google.displayName;
-                main.client.$save();
+                main.client.$loaded(function(){main.client.$save()});
             }
             main.authData = authData;
 
@@ -62,31 +74,31 @@
             main.auth.$unauth(); 
         }
         
-    }])
-    
-    
-    
-    de.controller('lp', ["$scope", function($scope){
-        $scope.yolo = 'hollla';
-    }])    
-    
-    de.controller('courses', ["$scope", function($scope){
-
-        var courses = this;
-        
-        courses.search = function(){
-            console.log(courses.query);
+        var allref = new Firebase("https://digitalemerald.firebaseio.com/all");
+                
+        main.addtoclient = function($id){
+            console.log(main.searchResults)
+            if (!main.client.shoppingcart){
+                main.client.shoppingcart = [];
+            }
+            var len = main.searchResults.length;
+            for (var i = 0; i<len; i++){
+                if((main.searchResults[i].$id === $id)){
+                    main.client.shoppingcart.push(main.searchResults[i]);
+                    main.client.$save();
+                }
+            }
         }
         
+        main.checkout = function (){
+            main.client.courses = main.client.courses.concat(main.client.shoppingcart);
+            console.log(main.client.courses);
+            main.client.$save();
+        }
         
-        courses.results = [{"name":"anthro"},{"name":"anthro"},{"name":"anthro"},{"name":"anthro"},{"name":"anthro"}]
+        main.searchResults = $firebaseArray(allref);
         
-        
-        
-        
-        
-        
-        
+    }]) 
     
-    }])
+
 })()
