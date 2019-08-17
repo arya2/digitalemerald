@@ -1,8 +1,8 @@
-##Rocket Roster
+## Rocket Roster
 
 An Angular app to organize course registration using the Open Data API from Waterloo University.
 
-###Features
+## Features
 
 * View course directory
 * Purchase courses
